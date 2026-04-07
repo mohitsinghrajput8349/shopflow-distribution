@@ -52,6 +52,16 @@ export const authApi = {
       body: JSON.stringify(data),
     }),
   me: () => request<UserResponse>("/auth/me"),
+  forgotPassword: (email: string) =>
+    request<{ message: string; reset_code: string }>("/auth/forgot-password", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    }),
+  resetPassword: (code: string, newPassword: string) =>
+    request<{ message: string }>("/auth/reset-password", {
+      method: "POST",
+      body: JSON.stringify({ code, newPassword }),
+    }),
 };
 
 // Products
