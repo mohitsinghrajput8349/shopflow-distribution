@@ -58,23 +58,23 @@ export default function OrdersPage() {
                   <span className="text-muted-foreground">Shop: {order.shopOwnerName}</span>
                   <span className="text-muted-foreground">Payment: {order.paymentMethod}</span>
                 </div>
-                <div className="border rounded-lg overflow-hidden">
-                  <table className="w-full text-sm">
+                <div className="border rounded-lg overflow-x-auto">
+                  <table className="w-full text-xs sm:text-sm min-w-[300px]">
                     <thead className="bg-muted/50">
                       <tr>
-                        <th className="text-left p-2 font-medium text-muted-foreground">Product</th>
-                        <th className="text-center p-2 font-medium text-muted-foreground">Qty</th>
-                        <th className="text-right p-2 font-medium text-muted-foreground">Price</th>
-                        <th className="text-right p-2 font-medium text-muted-foreground">Total</th>
+                        <th className="text-left p-1.5 sm:p-2 font-medium text-muted-foreground">Product</th>
+                        <th className="text-center p-1.5 sm:p-2 font-medium text-muted-foreground">Qty</th>
+                        <th className="text-right p-1.5 sm:p-2 font-medium text-muted-foreground hidden sm:table-cell">Price</th>
+                        <th className="text-right p-1.5 sm:p-2 font-medium text-muted-foreground">Total</th>
                       </tr>
                     </thead>
                     <tbody>
                       {order.items.map(item => (
                         <tr key={item.id} className="border-t">
-                          <td className="p-2 text-foreground">{item.productName}</td>
-                          <td className="p-2 text-center text-foreground">{item.quantity}</td>
-                          <td className="p-2 text-right text-foreground">₹{item.price}</td>
-                          <td className="p-2 text-right font-medium text-foreground">₹{item.total}</td>
+                          <td className="p-1.5 sm:p-2 text-foreground truncate max-w-[120px] sm:max-w-none">{item.productName}</td>
+                          <td className="p-1.5 sm:p-2 text-center text-foreground">{item.quantity}</td>
+                          <td className="p-1.5 sm:p-2 text-right text-foreground hidden sm:table-cell">₹{item.price}</td>
+                          <td className="p-1.5 sm:p-2 text-right font-medium text-foreground">₹{item.total}</td>
                         </tr>
                       ))}
                     </tbody>

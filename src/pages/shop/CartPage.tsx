@@ -58,27 +58,30 @@ export default function CartPage() {
         <div className="lg:col-span-2 space-y-3">
           {items.map(item => (
             <Card key={item.product.id} className="shadow-card">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-4">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-foreground">{item.product.name}</h3>
-                    <p className="text-sm text-muted-foreground">₹{item.product.price} each</p>
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <div className="flex items-center justify-between sm:flex-1 sm:min-w-0">
+                    <div className="min-w-0">
+                      <h3 className="font-semibold text-foreground text-sm sm:text-base truncate">{item.product.name}</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">₹{item.product.price} each</p>
+                    </div>
+                    <p className="font-bold text-foreground sm:hidden">₹{(item.product.price * item.quantity).toFixed(2)}</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.quantity - 1)}>
-                      <Minus className="h-3 w-3" />
+                  <div className="flex items-center justify-between sm:justify-end gap-3">
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.quantity - 1)}>
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <span className="w-8 text-center font-medium text-foreground">{item.quantity}</span>
+                      <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.quantity + 1)}>
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                    <p className="font-bold text-foreground hidden sm:block min-w-[80px] text-right">₹{(item.product.price * item.quantity).toFixed(2)}</p>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => removeFromCart(item.product.id)}>
+                      <Trash2 className="h-4 w-4" />
                     </Button>
-                    <span className="w-8 text-center font-medium text-foreground">{item.quantity}</span>
-                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.quantity + 1)}>
-                      <Plus className="h-3 w-3" />
-                    </Button>
                   </div>
-                  <div className="text-right min-w-[80px]">
-                    <p className="font-bold text-foreground">₹{(item.product.price * item.quantity).toFixed(2)}</p>
-                  </div>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => removeFromCart(item.product.id)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
                 </div>
               </CardContent>
             </Card>
