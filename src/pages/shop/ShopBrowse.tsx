@@ -54,7 +54,7 @@ export default function ShopBrowse() {
           <p className="text-lg font-medium">No products found</p>
         </CardContent></Card>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {filtered?.map(p => (
             <Card key={p.id} className="shadow-card hover:shadow-card-hover transition-shadow overflow-hidden">
               <div className="aspect-video bg-muted relative">
