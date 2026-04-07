@@ -40,11 +40,13 @@ export default function ShopBrowse() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input className="pl-9" placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
-        <div className="flex gap-2 flex-wrap">
-          <Button variant={category === "" ? "default" : "outline"} size="sm" onClick={() => setCategory("")}>All</Button>
-          {categories.map(c => (
-            <Button key={c} variant={category === c ? "default" : "outline"} size="sm" onClick={() => setCategory(c)}>{c}</Button>
-          ))}
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex gap-2 min-w-max sm:flex-wrap sm:min-w-0">
+            <Button variant={category === "" ? "default" : "outline"} size="sm" className="h-8 text-xs sm:text-sm" onClick={() => setCategory("")}>All</Button>
+            {categories.map(c => (
+              <Button key={c} variant={category === c ? "default" : "outline"} size="sm" className="h-8 text-xs sm:text-sm" onClick={() => setCategory(c)}>{c}</Button>
+            ))}
+          </div>
         </div>
       </div>
 
