@@ -53,7 +53,7 @@ export default function AppSidebar() {
                     <Link to={link.to} className="flex items-center gap-3">
                       <link.icon className="h-4 w-4" />
                       <span>{link.label}</span>
-                      {link.badge && <CartBadge />}
+                      {'badge' in link && link.badge && <CartBadge />}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
