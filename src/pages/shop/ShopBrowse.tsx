@@ -1,16 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import { productsApi, getImageUrl } from "@/lib/api";
+import { productsApi } from "@/lib/api";
 import { useCart } from "@/contexts/CartContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Package, ShoppingCart, Search } from "lucide-react";
+import { Package, ShoppingCart, Search, Plus, Minus } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import ProductCard from "@/components/ProductCard";
+import type { ProductResponse } from "@/lib/api";
 
 export default function ShopBrowse() {
   const { data: products, isLoading } = useQuery({ queryKey: ["products"], queryFn: productsApi.getAll });
-  const { addToCart } = useCart();
+  const { addToCart, items } = useCart();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
 
@@ -21,72 +23,111 @@ export default function ShopBrowse() {
     return p.isActive;
   });
 
-  const handleAdd = (product: typeof products extends (infer T)[] | undefined ? T : never) => {
+  const getCartQty = (productId: number) => items.find(i => i.product.id === productId)?.quantity ?? 0;
+
+  const handleAdd = (product: ProductResponse) => {
     addToCart(product);
-    toast.success(`${product.name} added to cart`);
+    toast.success(`${product.name} added to cart`, { duration: 1500 });
   };
 
-  if (isLoading) return <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">{[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="h-64 rounded-lg bg-muted animate-pulse" />)}</div>;
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <div className="h-8 w-48 bg-muted rounded animate-pulse" />
+          <div className="h-4 w-64 bg-muted rounded animate-pulse" />
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <div key={i} className="rounded-xl bg-muted animate-pulse" style={{ aspectRatio: "3/4" }} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Browse Products</h1>
-        <p className="text-muted-foreground">Find and order products for your shop</p>
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">Browse Products</h1>
+        <p className="text-sm text-muted-foreground">Find and order products for your shop</p>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
+      {/* Search & Filters */}
+      <div className="flex flex-col gap-3">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input className="pl-9" placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)} />
+          <Input className="pl-9 h-10" placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
           <div className="flex gap-2 min-w-max sm:flex-wrap sm:min-w-0">
-            <Button variant={category === "" ? "default" : "outline"} size="sm" className="h-8 text-xs sm:text-sm" onClick={() => setCategory("")}>All</Button>
+            <Button variant={category === "" ? "default" : "outline"} size="sm" className="h-8 text-xs sm:text-sm rounded-full" onClick={() => setCategory("")}>All</Button>
             {categories.map(c => (
-              <Button key={c} variant={category === c ? "default" : "outline"} size="sm" className="h-8 text-xs sm:text-sm" onClick={() => setCategory(c)}>{c}</Button>
+              <Button key={c} variant={category === c ? "default" : "outline"} size="sm" className="h-8 text-xs sm:text-sm rounded-full" onClick={() => setCategory(c)}>{c}</Button>
             ))}
           </div>
         </div>
       </div>
 
+      {/* Products Grid */}
       {filtered?.length === 0 ? (
         <Card className="shadow-card"><CardContent className="flex flex-col items-center py-12">
           <Package className="h-12 w-12 text-muted-foreground mb-4" />
-          <p className="text-lg font-medium">No products found</p>
+          <p className="text-lg font-medium text-foreground">No products found</p>
+          <p className="text-sm text-muted-foreground">Try a different search or category</p>
         </CardContent></Card>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          {filtered?.map(p => (
-            <Card key={p.id} className="shadow-card hover:shadow-card-hover transition-shadow overflow-hidden">
-              <div className="aspect-square sm:aspect-video bg-muted relative">
-                {p.imageUrl ? (
-                  <img src={getImageUrl(p.imageUrl)} alt={p.name} className="w-full h-full object-cover" />
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          {filtered?.map(p => {
+            const cartQty = getCartQty(p.id);
+            return (
+              <ProductCard key={p.id} product={p} variant="shop">
+                {cartQty > 0 ? (
+                  <AddToCartControl product={p} quantity={cartQty} />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center"><Package className="h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground" /></div>
+                  <Button
+                    className="w-full h-9 text-xs sm:text-sm gradient-accent border-0 text-accent-foreground hover:opacity-90 transition-opacity"
+                    disabled={p.stock === 0}
+                    onClick={() => handleAdd(p)}
+                  >
+                    <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
+                    {p.stock === 0 ? "Out of Stock" : "Add to Cart"}
+                  </Button>
                 )}
-                <span className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium bg-primary/90 text-primary-foreground">{p.category}</span>
-              </div>
-              <CardContent className="p-2.5 sm:p-4 space-y-2 sm:space-y-3">
-                <div>
-                  <h3 className="font-semibold text-foreground text-sm sm:text-base line-clamp-1">{p.name}</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1 sm:line-clamp-2">{p.description}</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm sm:text-lg font-bold text-foreground">₹{p.price}</span>
-                  <span className="text-[10px] sm:text-sm text-muted-foreground">
-                    {p.stock > 0 ? `${p.stock}` : "Out"}
-                  </span>
-                </div>
-                <Button className="w-full h-8 sm:h-9 text-xs sm:text-sm" disabled={p.stock === 0} onClick={() => handleAdd(p)}>
-                  <ShoppingCart className="h-3.5 w-3.5 mr-1 sm:mr-2" />
-                  {p.stock === 0 ? "Out" : "Add"}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+              </ProductCard>
+            );
+          })}
         </div>
       )}
+    </div>
+  );
+}
+
+function AddToCartControl({ product, quantity }: { product: ProductResponse; quantity: number }) {
+  const { addToCart, updateQuantity } = useCart();
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <Button
+        variant="outline"
+        size="icon"
+        className="h-9 w-9 rounded-lg shrink-0"
+        onClick={() => updateQuantity(product.id, quantity - 1)}
+      >
+        <Minus className="h-3.5 w-3.5" />
+      </Button>
+      <div className="flex-1 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+        <span className="text-sm font-bold text-primary">{quantity}</span>
+      </div>
+      <Button
+        variant="outline"
+        size="icon"
+        className="h-9 w-9 rounded-lg shrink-0"
+        onClick={() => addToCart(product, 1)}
+        disabled={quantity >= product.stock}
+      >
+        <Plus className="h-3.5 w-3.5" />
+      </Button>
     </div>
   );
 }
