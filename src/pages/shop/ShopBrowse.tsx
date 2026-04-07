@@ -57,28 +57,28 @@ export default function ShopBrowse() {
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {filtered?.map(p => (
             <Card key={p.id} className="shadow-card hover:shadow-card-hover transition-shadow overflow-hidden">
-              <div className="aspect-video bg-muted relative">
+              <div className="aspect-square sm:aspect-video bg-muted relative">
                 {p.imageUrl ? (
                   <img src={getImageUrl(p.imageUrl)} alt={p.name} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center"><Package className="h-10 w-10 text-muted-foreground" /></div>
+                  <div className="w-full h-full flex items-center justify-center"><Package className="h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground" /></div>
                 )}
-                <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-medium bg-primary/90 text-primary-foreground">{p.category}</span>
+                <span className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium bg-primary/90 text-primary-foreground">{p.category}</span>
               </div>
-              <CardContent className="p-4 space-y-3">
+              <CardContent className="p-2.5 sm:p-4 space-y-2 sm:space-y-3">
                 <div>
-                  <h3 className="font-semibold text-foreground">{p.name}</h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{p.description}</p>
+                  <h3 className="font-semibold text-foreground text-sm sm:text-base line-clamp-1">{p.name}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1 sm:line-clamp-2">{p.description}</p>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-foreground">₹{p.price}</span>
-                  <span className="text-sm text-muted-foreground">
-                    {p.stock > 0 ? `${p.stock} in stock` : "Out of stock"}
+                  <span className="text-sm sm:text-lg font-bold text-foreground">₹{p.price}</span>
+                  <span className="text-[10px] sm:text-sm text-muted-foreground">
+                    {p.stock > 0 ? `${p.stock}` : "Out"}
                   </span>
                 </div>
-                <Button className="w-full" disabled={p.stock === 0} onClick={() => handleAdd(p)}>
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  {p.stock === 0 ? "Out of Stock" : "Add to Cart"}
+                <Button className="w-full h-8 sm:h-9 text-xs sm:text-sm" disabled={p.stock === 0} onClick={() => handleAdd(p)}>
+                  <ShoppingCart className="h-3.5 w-3.5 mr-1 sm:mr-2" />
+                  {p.stock === 0 ? "Out" : "Add"}
                 </Button>
               </CardContent>
             </Card>
