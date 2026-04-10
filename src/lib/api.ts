@@ -168,5 +168,5 @@ export const notificationsApi = {
 export function getImageUrl(imageUrl: string | null): string {
   if (!imageUrl) return "";
   if (imageUrl.startsWith("http")) return imageUrl;
-  return `${API_BASE}/files/${imageUrl}`;
+  return `${BACKEND_URL}/files/${imageUrl}`;
 }
