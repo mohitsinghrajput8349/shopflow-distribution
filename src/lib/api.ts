@@ -1,4 +1,4 @@
-const API_BASE = "https://fmcg-app-production.up.railway.app";
+const BACKEND_URL = "https://fmcg-app-production.up.railway.app";
 
 function getToken(): string | null {
   return localStorage.getItem("fmcg_token");
@@ -14,7 +14,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     headers["Content-Type"] = "application/json";
   }
 
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  // Use CORS proxy to bypass backend CORS restrictions
+  const targetUrl = `${BACKEND_URL}${path}`;
+  const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
+  const res = await fetch(proxyUrl, { ...options, headers });
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: "Request failed" }));
     throw new Error(body.detail || body.message || "Request failed");
@@ -165,5 +168,5 @@ export const notificationsApi = {
 export function getImageUrl(imageUrl: string | null): string {
   if (!imageUrl) return "";
   if (imageUrl.startsWith("http")) return imageUrl;
-  return `${API_BASE}/files/${imageUrl}`;
+  return `${BACKEND_URL}/files/${imageUrl}`;
 }
