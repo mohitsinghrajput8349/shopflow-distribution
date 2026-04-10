@@ -1,4 +1,5 @@
-const API_BASE = "https://fmcg-app-production.up.railway.app";
+const BACKEND_URL = "https://fmcg-app-production.up.railway.app";
+const API_BASE = `https://corsproxy.io/?url=${encodeURIComponent(BACKEND_URL)}`;
 
 function getToken(): string | null {
   return localStorage.getItem("fmcg_token");
