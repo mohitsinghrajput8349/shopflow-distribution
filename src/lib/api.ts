@@ -1,4 +1,4 @@
-const BACKEND_URL = "https://fmcg-app-production.up.railway.app";
+const BACKEND_URL = "https://fmcg-app-production.up.railway.app/api";
 
 function getToken(): string | null {
   return localStorage.getItem("fmcg_token");
@@ -14,10 +14,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     headers["Content-Type"] = "application/json";
   }
 
-  // Use CORS proxy to bypass backend CORS restrictions
-  const targetUrl = `${BACKEND_URL}${path}`;
-  const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
-  const res = await fetch(proxyUrl, { ...options, headers });
+  const res = await fetch(`${BACKEND_URL}${path}`, { ...options, headers });
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: "Request failed" }));
     throw new Error(body.detail || body.message || "Request failed");
