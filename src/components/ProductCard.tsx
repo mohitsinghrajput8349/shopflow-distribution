@@ -1,7 +1,7 @@
 import { getImageUrl, type ProductResponse } from "@/lib/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Package, Star, TrendingUp } from "lucide-react";
+import { Package } from "lucide-react";
 
 interface ProductCardImageProps {
   product: ProductResponse;
@@ -16,8 +16,10 @@ export default function ProductCard({ product, children, variant = "shop" }: Pro
 
   return (
     <Card className="group shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden border-0 bg-card">
-      {/* Image Container */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+
+      {/* 🔥 IMAGE CONTAINER */}
+      <div className="relative aspect-[4/3] overflow-hidden">
+        
         {hasImage ? (
           <img
             src={getImageUrl(p.imageUrl)}
@@ -26,47 +28,47 @@ export default function ProductCard({ product, children, variant = "shop" }: Pro
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-muted to-muted/50">
+          <div className="w-full h-full flex flex-col items-center justify-center bg-muted/30">
             <Package className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground/40 mb-2" />
             <span className="text-xs text-muted-foreground/50">No image</span>
           </div>
         )}
 
-        {/* Overlay gradient at bottom */}
+        {/* ✅ LIGHT OVERLAY (optional, very subtle) */}
         {hasImage && (
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/50 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/20 to-transparent" />
         )}
 
-        {/* Category badge */}
+        {/* ✅ CATEGORY BADGE */}
         <Badge className="absolute top-2.5 left-2.5 bg-card/90 backdrop-blur-sm text-foreground border-0 text-[10px] sm:text-xs font-medium shadow-sm">
           {p.category}
         </Badge>
 
-        {/* Stock indicator */}
+        {/* ✅ STOCK */}
         <div className="absolute top-2.5 right-2.5">
           {inStock ? (
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-success/90 text-success-foreground text-[10px] font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-success-foreground animate-pulse" />
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-500 text-white text-[10px] font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               {p.stock}
             </span>
           ) : (
-            <span className="px-1.5 py-0.5 rounded-full bg-destructive/90 text-destructive-foreground text-[10px] font-medium">
+            <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-medium">
               Out
             </span>
           )}
         </div>
 
-        {/* Price on image (when image exists) */}
+        {/* ✅ PRICE */}
         {hasImage && (
           <div className="absolute bottom-2.5 left-2.5">
-            <span className="text-lg sm:text-xl font-bold text-primary-foreground drop-shadow-md">
+            <span className="text-lg sm:text-xl font-bold text-white drop-shadow-md">
               ₹{p.price}
             </span>
           </div>
         )}
       </div>
 
-      {/* Content */}
+      {/* 🔥 CONTENT */}
       <CardContent className="p-3 sm:p-4 space-y-2.5">
         <div>
           <h3 className="font-semibold text-foreground text-sm sm:text-base leading-tight line-clamp-1 group-hover:text-primary transition-colors">
@@ -77,14 +79,12 @@ export default function ProductCard({ product, children, variant = "shop" }: Pro
           </p>
         </div>
 
-        {/* Price row (when no image) */}
         {!hasImage && (
           <div className="flex items-center justify-between">
             <span className="text-lg font-bold text-foreground">₹{p.price}</span>
           </div>
         )}
 
-        {/* Actions slot */}
         {children}
       </CardContent>
     </Card>
