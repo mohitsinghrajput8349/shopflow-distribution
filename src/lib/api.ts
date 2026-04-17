@@ -1,5 +1,7 @@
-// Existing content before line 168...
+const BACKEND_URL = "https://backendfullfmcg-production.up.railway.app/api";
 
-return `https://backendfullfmcg-production.up.railway.app/api/files/${imageUrl}`;
+// other code
 
-// Existing content after line 168...
+function getImageUrl(imageUrl) {
+    return `https://backendfullfmcg-production.up.railway.app/api/files/${imageUrl}`;
+}
