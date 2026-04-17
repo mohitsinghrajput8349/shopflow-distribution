@@ -1,4 +1,4 @@
-const BACKEND_URL = "https://fmcg-app-production.up.railway.app/api";
+const BACKEND_URL = "https://backendfullfmcg-production.up.railway.app/api";
 
 function getToken(): string | null {
   return localStorage.getItem("fmcg_token");
