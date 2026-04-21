@@ -1,8 +1,7 @@
 const BACKEND_URL = "https://backendfullfmcg-production.up.railway.app/api";
-const isClient = typeof window !== "undefined";
 
 function getToken(): string | null {
-  if (!isClient) return null;
+  if (typeof window === "undefined") return null;
   return localStorage.getItem("fmcg_token");
 }
 
@@ -120,7 +119,7 @@ export const productsApi = {
       method: "DELETE",
     }),
 
-  uploadImage: async (id: number, file: File) => {
+  uploadImage: async (id: number, file: any) => {
     const token = getToken();
 
     const formData = new FormData();
