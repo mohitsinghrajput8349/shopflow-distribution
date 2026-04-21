@@ -21,10 +21,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (token) {
-      authApi.me().then(setUser).catch(() => {
-        localStorage.removeItem("fmcg_token");
-        setToken(null);
-      }).finally(() => setIsLoading(false));
+      authApi.me()
+        .then(setUser)
+        .catch((err) => {
+          // Backend /auth/me may be broken (returns 403 even for valid tokens).
+          // Only clear token on explicit 401 Unauthorized; keep session otherwise.
+          const msg = String(err?.message || "");
+          if (msg.toLowerCase().includes("unauthorized") || msg.includes("401")) {
+            localStorage.removeItem("fmcg_token");
+            setToken(null);
+          }
+        })
+        .finally(() => setIsLoading(false));
     } else {
       setIsLoading(false);
     }
