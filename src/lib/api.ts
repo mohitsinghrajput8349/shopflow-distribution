@@ -1,14 +1,10 @@
-// src/lib/api.ts
-
 const BACKEND_URL = "https://backendfullfmcg-production.up.railway.app/api";
-
-// ─── Token Helper ─────────────────────────────────────────────
+const isClient = typeof window !== "undefined";
 
 function getToken(): string | null {
+  if (!isClient) return null;
   return localStorage.getItem("fmcg_token");
 }
-
-// ─── Generic API Request ──────────────────────────────────────
 
 async function apiRequest<T>(
   endpoint: string,
@@ -43,8 +39,6 @@ async function apiRequest<T>(
 
   return response.json();
 }
-
-// ─── Types ────────────────────────────────────────────────────
 
 export type Role = "ADMIN" | "SHOP_OWNER";
 
@@ -84,8 +78,6 @@ export interface ProductRequest {
   category: string;
 }
 
-// ─── Auth API ─────────────────────────────────────────────────
-
 export const authApi = {
   login: (email: string, password: string) =>
     apiRequest<AuthResponse>("/auth/login", {
@@ -107,8 +99,6 @@ export const authApi = {
 
   me: () => apiRequest<UserResponse>("/auth/me"),
 };
-
-// ─── Products API ─────────────────────────────────────────────
 
 export const productsApi = {
   getAll: () => apiRequest<ProductResponse[]>("/products"),
@@ -132,6 +122,7 @@ export const productsApi = {
 
   uploadImage: async (id: number, file: File) => {
     const token = getToken();
+
     const formData = new FormData();
     formData.append("file", file);
 
@@ -163,8 +154,6 @@ export const productsApi = {
     return response.json();
   },
 };
-
-// ─── Utility ──────────────────────────────────────────────────
 
 export function getImageUrl(imageUrl: string | null): string {
   return imageUrl ? `${BACKEND_URL}/files/${imageUrl}` : "";
