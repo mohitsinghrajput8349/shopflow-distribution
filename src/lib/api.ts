@@ -1,4 +1,4 @@
-const BACKEND_URL = "https://backendfullfmcg-production.up.railway.app/api";
+const BACKEND_URL = "https://backendfullfmcg-production-a399.up.railway.app/api";
 
 function getToken(): string | null {
   if (typeof window === "undefined") return null;
